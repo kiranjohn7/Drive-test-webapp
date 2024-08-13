@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "connect-flash": "^0.1.1",
+    "draft-js": "^0.11.7",
+    "ejs": "^3.1.10",
+    "encrypt": "^0.0.1",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "mongoose": "^8.4.1",
+    "react-draft-wysiwyg": "^1.15.0"
+  },
+  "name": "driving",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app js",
+    "start": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

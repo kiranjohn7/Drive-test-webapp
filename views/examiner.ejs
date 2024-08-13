@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('layouts/header'); -%>
+  <body>
+    <!-- Navigation-->
+    <%- include('layouts/navbar'); -%>
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('assets/img/Examiner.jpg')">
+      <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-md-10 col-lg-8 col-xl-7">
+            <div class="page-heading">
+              <h1>Examiner</h1>
+              <span class="subheading">Book Now!!!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- Main Content-->
+    <main>
+        <div class="container">
+            <form id="examiner-form" method="GET" action="/examiner">
+              <div class="form-group">
+                <label for="examinerType">Select Drivers Type:</label>
+                <select class="form-control" id="examinerType" name="examinerType">
+                  <option value="G" <%= examinerType === 'G' ? 'selected' : '' %>>G Drivers</option>
+                  <option value="G2" <%= examinerType === 'G2' ? 'selected' : '' %>>G2 Drivers</option>
+                </select>
+              </div>
+              <br>
+            </form>
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <br><br>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">First Name</th>
+                      <th scope="col">Last Name</th>
+                      <th scope="col">Age</th>
+                      <th scope="col">Make</th>
+                      <th scope="col">Plate Number</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (drivers && drivers.length > 0) { %>
+                      <% drivers.forEach((driver, index) => { %>
+                        <tr>
+                          <th scope="row"><%= index + 1 %></th>
+                          <td><%= driver.firstname %></td>
+                          <td><%= driver.lastname %></td>
+                          <td><%= driver.age %></td>
+                          <td><%= driver.carDetails.make %></td>
+                          <td><%= driver.carDetails.plateNumber %></td>
+                          <td>
+                            <button type="button" class="btn btn-primary btn-sm view-btn" data-id="<%= driver._id %>" data-firstname="<%= driver.firstname %>" data-lastname="<%= driver.lastname %>">View</button>
+                          </td>
+                        </tr>
+                      <% }); %>
+                    <% } else { %>
+                      <tr>
+                        <td colspan="7" class="text-center">No drivers found</td>
+                      </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Modal -->
+<!-- Modal -->
+<div class="modal fade" id="driverModal" tabindex="-1" aria-labelledby="driverModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="driverModalLabel">Driver Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="driverForm" method="POST" action="/updateDriverStatus">
+            <input type="hidden" id="driverId" name="driverId">
+            <div class="mb-3">
+              <label for="driverName" class="form-label">Driver Name</label>
+              <input type="text" class="form-control" id="driverName" name="driverName" readonly>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Status</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="statusPass" name="status" value="true">
+                <label class="form-check-label" for="statusPass">Pass</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" id="statusFail" name="status" value="false">
+                <label class="form-check-label" for="statusFail">Fail</label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="comments" class="form-label">Comments</label>
+              <textarea class="form-control" id="comments" name="comments" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+    <!-- Footer-->
+    <%- include('layouts/footer'); -%>
+    <!-- Scripts -->
+    <%- include('layouts/scripts'); -%>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+  const viewButtons = document.querySelectorAll(".view-btn");
+  viewButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const driverId = button.getAttribute("data-id");
+      const driverFirstname = button.getAttribute("data-firstname");
+      const driverLastname = button.getAttribute("data-lastname");
+      const driverStatus = button.getAttribute("data-status"); // Assuming status is passed as a data attribute
+
+      document.getElementById("driverId").value = driverId;
+      document.getElementById("driverName").value = `${driverFirstname} ${driverLastname}`;
+
+      // Set the status radio buttons
+      document.querySelector(`#statusPass`).checked = driverStatus === 'true';
+      document.querySelector(`#statusFail`).checked = driverStatus === 'false';
+
+      const modal = new bootstrap.Modal(document.getElementById("driverModal"));
+      modal.show();
+    });
+  });
+});
+
+    </script>
+  </body>
+</html>

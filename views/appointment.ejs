@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('layouts/header'); -%>
+  <body>
+    <!-- Navigation-->
+    <%- include('layouts/navbar'); -%>
+    <!-- Page Header-->
+    <header
+      class="masthead"
+      style="background-image: url('assets/img/Appointment.jpg')"
+    >
+      <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-md-10 col-lg-8 col-xl-7">
+            <div class="page-heading">
+              <h1>Appointment</h1>
+              <span class="subheading">Book Now!!!</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- Main Content-->
+    <main>
+      <div class="container">
+        <form id="appointment-form" method="POST" action="/appointment">
+          <div class="form-group">
+            <label for="date">Date:</label>
+            <input
+              type="date"
+              class="form-control"
+              id="date"
+              name="date"
+              required
+            />
+          </div>
+          <br />
+          <div class="form-group">
+            <label for="timeSlots">Time Slots:</label>
+            <div id="timeSlots"></div>
+          </div>
+          <br />
+          <input type="hidden" id="selectedTimeSlots" name="timeSlots" />
+          <button type="submit" class="btn btn-success">Add Appointment</button>
+        </form>
+        <input
+          type="hidden"
+          id="slotData"
+          value="<%= JSON.stringify(data || []) %>"
+        />
+      </div>
+    </main>
+    <!-- Footer-->
+    <%- include('layouts/footer'); -%>
+    <!-- Scripts -->
+    <%- include('layouts/scripts'); -%>
+    <!-- Custom Script to Handle Button Clicks -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const datePicker = document.getElementById("date");
+        const timeSlotsDiv = document.getElementById("timeSlots");
+        const selectedTimeSlotsInput =
+          document.getElementById("selectedTimeSlots");
+        console.log(document.getElementById("slotData").value);
+        const slotDataInput = JSON.parse(
+          document.getElementById("slotData").value
+        );
+
+        // Available time slots for selection
+        const availableTimeSlots = [
+          "09:00",
+          "09:30",
+          "10:00",
+          "10:30",
+          "11:00",
+          "11:30",
+          "12:00",
+          "12:30",
+          "13:00",
+          "13:30",
+          "14:00",
+        ];
+
+        // Object to store selected time slots for each date
+        const selectedSlotsByDate = {};
+
+        // Function to update the displayed time slots for the selected date
+        function updateTimeSlots(date) {
+          timeSlotsDiv.innerHTML = "";
+          availableTimeSlots.forEach((time) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "btn btn-primary time-slot-btn";
+            button.setAttribute("data-time", time);
+            button.textContent = time;
+
+            if (slotDataInput.length) {
+              slotDataInput.forEach((appointment) => {
+                console.log(appointment);
+                appointment.timeSlots.forEach((slot) => {
+                  if (appointment.date === date && slot.time == time) {
+                    button.classList.add("selected");
+                    button.disabled = true;
+                  }
+                });
+              });
+            }
+       
+
+            if (
+              selectedSlotsByDate[date] &&
+              selectedSlotsByDate[date].includes(time)
+            ) {
+              button.classList.add("selected");
+            }
+
+            button.addEventListener("click", () => {
+              if (!button.classList.contains("selected")) {
+                button.classList.add("selected");
+                if (!selectedSlotsByDate[date]) {
+                  selectedSlotsByDate[date] = [];
+                }
+                selectedSlotsByDate[date].push(time);
+              } else {
+                button.classList.remove("selected");
+                selectedSlotsByDate[date] = selectedSlotsByDate[date].filter(
+                  (slot) => slot !== time
+                );
+              }
+              updateSelectedTimeSlots();
+            });
+
+            timeSlotsDiv.appendChild(button);
+          });
+        }
+
+        // Function to update the hidden input with selected time slots
+        function updateSelectedTimeSlots() {
+          selectedTimeSlotsInput.value = JSON.stringify(selectedSlotsByDate);
+          console.log(selectedSlotsByDate);
+        }
+
+        // Event listener for date picker change
+        datePicker.addEventListener("change", () => {
+          const selectedDate = datePicker.value;
+          updateTimeSlots(selectedDate);
+        });
+
+        // Initialize time slots for the current date on page load
+        if (datePicker.value) {
+          updateTimeSlots(datePicker.value);
+        }
+      });
+    </script>
+  </body>
+</html>

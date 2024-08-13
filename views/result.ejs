@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('layouts/header'); -%>
+  <body>
+    <!-- Navigation-->
+    <%- include('layouts/navbar'); -%>
+    <!-- Page Header-->
+    <header
+      class="masthead"
+      style="background-image: url('assets/img/Appointment.jpg')"
+    >
+      <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-md-10 col-lg-8 col-xl-7">
+            <div class="page-heading">
+              <h1>Manage Appointments</h1>
+              <span class="subheading">Review and Update Status</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <!-- Main Content-->
+    <main>
+      <div class="container">
+        <!-- Form Section -->
+        <form id="status-form" method="POST" >
+          <div class="form-group">
+            <label for="status">Update Status:</label>
+            <select
+              class="form-control"
+              id="status"
+              name="status"
+              onchange="document.getElementById('status-form').submit();"
+              required
+            >
+              <option  selected disabled>All</option>
+              <option value="true">Pass</option>
+              <option value="false">Fail</option>
+            </select>
+          </div>
+        </form>
+        <br />
+
+        <!-- Table Section -->
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Appointment Date</th>
+              <th>licenseNo</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+              <% user.forEach(function(user) { %>
+                <tr>
+                  <td><%= user.firstname %></td>
+                  <td><%= user.appointments.date %></td>
+                  <td><%= user.licenseNo %></td>
+                  <td>
+                    <span
+                      class=" <%= user.status ? 'text-success' : 'text-danger' %>"
+                    >
+                      <%= user.status ? 'Pass' : 'Fail' %>
+                  </span>
+                  </td>
+                </tr>
+              <% }); %>
+           
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <!-- Footer-->
+    <%- include('layouts/footer'); -%>
+    <!-- Scripts -->
+    <%- include('layouts/scripts'); -%>
+  </body>
+</html>

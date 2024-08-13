@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('layouts/header'); -%>
+  <body>
+    <!-- Navigation-->
+    <%- include('layouts/navbar'); -%>
+    <!-- Page Header-->
+    <header class="masthead" style="background-image: url('assets/img/G.jpg')">
+      <div class="container position-relative px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-md-10 col-lg-8 col-xl-7">
+            <div class="post-heading">
+              <h1>G Test</h1>
+              <h2 class="subheading">G License</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="mb-4">
+      <div class="container px-4 px-lg-5">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+          <div class="col-md-10 col-lg-8 col-xl-7">
+            <div class="my-5">
+              <h1>User Information</h1>
+              <% if (user && user.licenseNo != "default") { %>
+                <form id="contactForm" method="post" action="/g2/update" onsubmit="handleFormSubmit(event)">
+
+                  <div class="form-floating">
+                    <input
+                      class="form-control"
+                      id="fname"
+                      name="firstname"
+                      type="text"
+                      value="<%= user.firstname %>"
+                      placeholder="Enter your First name..."
+                      data-sb-validations="required"
+                      disabled
+                    />
+                    <label for="fname">First Name</label>
+                    <div class="invalid-feedback" data-sb-feedback="fname:required">
+                      First name is required.
+                    </div>
+                  </div>
+                  <div class="form-floating">
+                    <input
+                      class="form-control"
+                      id="lname"
+                      name="lastname"
+                      type="text"
+                      value="<%= user.lastname %>"
+                      placeholder="Enter your Last name..."
+                      data-sb-validations="required"
+                      disabled
+                    />
+                    <label for="lname">Last Name</label>
+                    <div class="invalid-feedback" data-sb-feedback="lname:required">
+                      Last name is required.
+                    </div>
+                  </div>
+                  <div class="form-floating">
+                    <input
+                      class="form-control"
+                      id="lnumber"
+                      name="licenseNo"
+                      type="text"
+                      value="<%= user.licenseNo %>"
+                      pattern="[a-zA-Z0-9]{8}"
+                      minlength="8"
+                      maxlength="8"
+                      placeholder="Enter your License number..."
+                      data-sb-validations="required"
+                      readonly
+                    />
+                    <label for="lnumber">License Number</label>
+                    <div class="invalid-feedback" data-sb-feedback="lnumber:required">
+                      License number is required.
+                    </div>
+                  </div>
+                  <div class="form-floating">
+                    <input
+                      class="form-control"
+                      id="age"
+                      type="number"
+                      name="age"
+                      placeholder="Enter your Age..."
+                      value="<%= user.age %>"
+                      data-sb-validations="required"
+                      disabled
+                    />
+                    <label for="age">Age</label>
+                    <div class="invalid-feedback" data-sb-feedback="age:required">
+                      Age is required.
+                    </div>
+                  </div>
+                  <br />
+                  <h1>Car Details</h1>
+                  <div class="form-floating">
+                    <input
+                      class="form-control"
+                      id="make"
+                      type="text"
+                      name="make"
+                      placeholder="Enter Car's Brand..."
+                      value="<%= user.carDetails.make %>"
+                      data-sb-validations="required"
+                    />
+                    <label for="make">Make</label>
+                    <div class="invalid-feedback" data-sb-feedback="make:required">
+                      Brand is required.
+                    </div>
+                  </div>
+                  <div class="form-floating">
+                    <input
+                      class="form-control"
+                      id="model"
+                      type="text"
+                      name="model"
+                      placeholder="Enter Car's Model..."
+                      value="<%= user.carDetails.model %>"
+                      data-sb-validations="required"
+                    />
+                    <label for="model">Model</label>
+                    <div class="invalid-feedback" data-sb-feedback="model:required">
+                      Model is required.
+                    </div>
+                  </div>
+                  <div class="form-floating">
+                    <input
+                      class="form-control"
+                      id="year"
+                      type="number"
+                      name="year"
+                      placeholder="Enter Car's model year..."
+                      value="<%= user.carDetails.year %>"
+                      data-sb-validations="required"
+                    />
+                    <label for="year">Year</label>
+                    <div class="invalid-feedback" data-sb-feedback="year:required">
+                      Year is required.
+                    </div>
+                  </div>
+                  <div class="form-floating">
+                    <input
+                      class="form-control"
+                      id="pnumber"
+                      type="text"
+                      name="plateNumber"
+                      pattern="[a-zA-Z0-9]{1,}"
+                      placeholder="Enter Plate number..."
+                      value="<%= user.carDetails.plateNumber %>"
+                      data-sb-validations="required"
+                    />
+                    <label for="pnumber">Plate Number</label>
+                    <div class="invalid-feedback" data-sb-feedback="pnumber:required">
+                      Plate Number is required.
+                    </div>
+                  </div>
+                  <br />
+
+                  <h1>Pick a Time Slot</h1>
+                   <select class="form-select" id="timeSlot" name="timeSlot" required>
+                  <% if (typeof availableSlots !== 'undefined' && availableSlots.length > 0) { %>
+                    <% availableSlots.forEach(slot => { %>
+                      <option value="<%= slot %>"><%= slot %></option>
+                    <% }); %>
+                  <% } else { %>
+                    <option value="">No available slots</option>
+                  <% } %>
+                </select>
+                  <br />
+
+                  <div class="d-none" id="submitSuccessMessage">
+                    <div class="text-center mb-3">
+                      <div class="fw-bolder">Form submission successful!</div>
+                    </div>
+                  </div>
+                  <div class="d-none" id="submitErrorMessage">
+                    <div class="text-center text-danger mb-3">
+                      Please enter correct information!
+                    </div>
+                  </div>
+                  <button class="btn btn-primary text-uppercase" id="submitButton" type="submit">
+                    Submit
+                  </button>
+                </form>
+              <% } else { %>
+                <h2 class="not-found">
+                  Your information needs to be updated.
+                </h2>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <!-- Footer-->
+    <%- include('layouts/footer'); -%>
+    <!-- Scripts -->
+    <%- include('layouts/scripts'); -%>
+<script>
+      function handleFormSubmit(event) {
+        event.preventDefault();
+
+        // Assuming you make an AJAX call to submit the form data
+        const formData = new FormData(document.getElementById('contactForm'));
+        const selectedTimeSlot = document.getElementById('timeSlot').value;
+
+        fetch('/g2/update', {
+          method: 'POST',
+          body: formData,
+        })
+        .then(response => {
+          if (response.ok) {
+              alert('Slot booked successfully for ' + selectedTimeSlot + '!');
+            window.location.href = '/'; // Redirect to a different page if needed
+          } else {
+            alert('There was an error booking the slot.');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('There was an error booking the slot.');
+        });
+      }
+    </script>
+
+  </body>
+</html>
